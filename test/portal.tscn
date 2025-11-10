@@ -13,21 +13,24 @@ shader = ExtResource("2_ef3v5")
 shader_parameter/albedo = SubResource("ViewportTexture_grrij")
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ef3v5"]
+resource_local_to_scene = true
+size = Vector3(0.3, 0.3, 2)
 
 [node name="Portal2" type="Area3D"]
 script = ExtResource("1_0r486")
 metadata/_custom_type_script = "uid://db5pv7n064hm4"
 
 [node name="Portal" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.036891576)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.0007378316)
 layers = 524288
-size = Vector3(0.1, 0.1, 0.07378315)
+size = Vector3(0.1, 0.1, 0.0014756632)
 material = SubResource("ShaderMaterial_grrij")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 
 [node name="Camera3D" type="Camera3D" parent="SubViewport"]
 current = true
+near = 0.001
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_ef3v5")

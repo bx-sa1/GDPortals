@@ -3,25 +3,12 @@ class_name Portal extends Area3D
 
 @export var cull_layer = 20
 @export var link: Portal
-@export var portal_area_margin = Vector3(0.1, 0.1, 1.0) :
-	set(val):
-		portal_area_margin = val
-		update_portal_area_size(portal_area_margin, size)
-	get:
-		return portal_area_margin
-@export var size = Vector3(0.1, 0.1, 1.0) :
-	set(val):
-		size = val
-		update_portal_area_size(portal_area_margin, size)
-	get:
-		return size
+@export var portal_area_margin = Vector3(0.1, 0.1, 1.0)
+@export var size = Vector3(0.1, 0.1, 1.0)
 
 var visual: CSGBox3D:
 	set(v):
 		visual = v
-		update_portal_area_size(portal_area_margin, size)
-		visual.set_layer_mask_value(1, false)
-		visual.set_layer_mask_value(cull_layer, true)
 		update_configuration_warnings()
 var subviewport: SubViewport:
 	set(v):
@@ -66,10 +53,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 # 	update_portal_area_size(portal_area_margin, size)
 
-# 	visual.set_layer_mask_value(1, false)
-# 	visual.set_layer_mask_value(cull_layer, true)
-# 	camera.set_cull_mask_value(link.cull_layer, false)
-
+#
 # 	subviewport.add_child(camera)
 # 	add_child(visual)
 # 	add_child(subviewport)
@@ -80,7 +64,14 @@ func _get_configuration_warnings() -> PackedStringArray:
 	# visual.material = mat
 
 func _ready() -> void:
-	update_portal_area_size(portal_area_margin, size)
+	if Engine.is_editor_hint():
+		return
+
+	update_portal_area_size()
+	visual.set_layer_mask_value(1, false)
+	visual.set_layer_mask_value(cull_layer, true)
+	get_portal_camera().set_cull_mask_value(link.cull_layer, false)
+
 
 func _enter_tree() -> void:
 	child_entered_tree.connect(on_child_entered_tree)
@@ -89,6 +80,10 @@ func _enter_tree() -> void:
 	body_exited.connect(on_body_exited)
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		update_portal_area_size()
+		return
+
 	do_update()
 
 func _physics_process(delta: float) -> void:
@@ -96,6 +91,7 @@ func _physics_process(delta: float) -> void:
 
 func do_update():
 	update_pos()
+	update_portal_area_size()
 	auto_thick()
 	try_teleport()
 
@@ -132,20 +128,16 @@ func update_pos():
 
 	subviewport.size = get_viewport().get_visible_rect().size
 
-func update_portal_area_size(portal_area_margin, size):
-	if not visual:
-		return
+func update_portal_area_size():
+	if visual:
+		visual.size.x = size.x
+		visual.size.y = size.y
 
-	visual.size.x = size.x
-	visual.size.y = size.y
-
-	if not collision_shape:
-		return
-
-	collision_shape.shape.size = Vector3(
-		size.x + portal_area_margin.x * 2,
-		size.y + portal_area_margin.y * 2,
-		portal_area_margin.z * 2)
+	if collision_shape:
+		collision_shape.shape.size = Vector3(
+			size.x + portal_area_margin.x * 2,
+			size.y + portal_area_margin.y * 2,
+			portal_area_margin.z * 2)
 
 func get_portal_camera() -> Camera3D:
 	if subviewport == null:

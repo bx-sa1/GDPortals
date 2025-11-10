@@ -1,48 +1,42 @@
-[gd_scene load_steps=13 format=3 uid="uid://e41o2yvg2mdq"]
+[gd_scene load_steps=15 format=3 uid="uid://e41o2yvg2mdq"]
 
 [ext_resource type="PackedScene" uid="uid://vwd7daj7kja1" path="res://portal.tscn" id="2_0xm2m"]
 [ext_resource type="Script" uid="uid://1tshesakosmw" path="res://addons/GDPlayerControllers/scripts/fps_controller.gd" id="2_h2yge"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
-albedo_color = Color(1, 0.38, 0.38, 1)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_0xm2m"]
-material = SubResource("StandardMaterial3D_0xm2m")
-size = Vector2(50, 50)
-
-[sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_h2yge"]
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_ig7tw"]
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
 [sub_resource type="Sky" id="Sky_0xm2m"]
-sky_material = SubResource("ProceduralSkyMaterial_ig7tw")
+sky_material = SubResource("ProceduralSkyMaterial_0xm2m")
 
 [sub_resource type="Environment" id="Environment_h2yge"]
 background_mode = 2
 sky = SubResource("Sky_0xm2m")
 
-[sub_resource type="SphereMesh" id="SphereMesh_h2yge"]
-radius = 0.975
-height = 4.36
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_h2yge"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0xm2m"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_1bvp3"]
 radius = 0.975
 height = 1.06
 
-[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_0xm2m"]
+[sub_resource type="SphereMesh" id="SphereMesh_h2yge"]
+radius = 0.975
+height = 4.36
 
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_h2yge"]
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_0xm2m"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_h2yge"]
+albedo_texture = SubResource("PlaceholderTexture2D_0xm2m")
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1bvp3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lquwl"]
+albedo_texture = SubResource("PlaceholderTexture2D_1bvp3")
 
 [node name="main" type="Node3D"]
-
-[node name="Ground" type="StaticBody3D" parent="."]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
-mesh = SubResource("PlaneMesh_0xm2m")
-skeleton = NodePath("../..")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground"]
-shape = SubResource("WorldBoundaryShape3D_h2yge")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_h2yge")
@@ -50,21 +44,18 @@ environment = SubResource("Environment_h2yge")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, -0.1185773, 0.99294484, 0, -0.99294484, -0.1185773, 0, 20.328068, 0)
 shadow_enabled = true
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 4)
-mesh = SubResource("SphereMesh_h2yge")
-
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 4)
-mesh = SubResource("SphereMesh_1bvp3")
+shadow_blur = 10.0
+directional_shadow_blend_splits = true
 
 [node name="FPController" type="CharacterBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.951445, 0)
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 10, 2.951445, -13)
 velocity = Vector3(0, -0.45, 0)
 script = ExtResource("2_h2yge")
+MAX_SPEED = 5
+JUMP_ACCEL = 6
 
 [node name="Camera3D" type="Camera3D" parent="FPController"]
+near = 0.001
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="FPController"]
 shape = SubResource("CapsuleShape3D_0xm2m")
@@ -72,32 +63,93 @@ shape = SubResource("CapsuleShape3D_0xm2m")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="FPController"]
 mesh = SubResource("CapsuleMesh_h2yge")
 
-[node name="Portal" parent="." node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.981345, 2, 0)
-link = NodePath("../Portal2")
-size = Vector3(6, 4, 1)
+[node name="World" type="Node3D" parent="."]
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Portal"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.036891576)
-operation = 1
+[node name="CSGBox3D" type="CSGBox3D" parent="World"]
 use_collision = true
-size = Vector3(7, 5, 0.07378315)
+size = Vector3(100, 0.1, 100)
+material = SubResource("StandardMaterial3D_0xm2m")
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Portal/CSGBox3D"]
-operation = 2
-size = Vector3(6, 4, 1)
-
-[node name="Portal2" parent="." node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
+[node name="Portal2" parent="World" node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.758938, 2, 0)
 link = NodePath("../Portal")
 size = Vector3(6, 4, 1)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Portal2"]
+[node name="CSGBox3D" type="CSGBox3D" parent="World/Portal2"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.036891576)
 operation = 1
 use_collision = true
 size = Vector3(7, 5, 0.07378315)
 
-[node name="CSGBox3D" type="CSGBox3D" parent="Portal2/CSGBox3D"]
+[node name="CSGBox3D" type="CSGBox3D" parent="World/Portal2/CSGBox3D"]
 operation = 2
 size = Vector3(6, 4, 1)
+
+[node name="Portal" parent="World" node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10.981345, 2, 0)
+link = NodePath("../Portal2")
+size = Vector3(6, 4, 1)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="World/Portal"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.036891576)
+operation = 1
+use_collision = true
+size = Vector3(7, 5, 0.07378315)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="World/Portal/CSGBox3D"]
+operation = 2
+size = Vector3(6, 4, 1)
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 1, 4)
+mesh = SubResource("SphereMesh_1bvp3")
+skeleton = NodePath("../..")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 1, 4)
+mesh = SubResource("SphereMesh_h2yge")
+skeleton = NodePath("../..")
+
+[node name="TunnelShort" type="CSGBox3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.8, 21)
+use_collision = true
+size = Vector3(2, 3.5, 1.5)
+material = SubResource("StandardMaterial3D_h2yge")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="World/TunnelShort"]
+operation = 2
+size = Vector3(1.5, 3, 5)
+
+[node name="Portal3" parent="World/TunnelShort" node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.75)
+link = NodePath("../../TunnerLong/Portal5")
+portal_area_margin = Vector3(0.1, 0.1, 0.01)
+size = Vector3(1.5, 3, 0.01)
+
+[node name="Portal4" parent="World/TunnelShort" node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.75)
+link = NodePath("../../TunnerLong/Portal6")
+portal_area_margin = Vector3(0.1, 0.1, 0.1)
+size = Vector3(1.5, 3, 0.1)
+
+[node name="TunnerLong" type="CSGBox3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.8, 21)
+use_collision = true
+size = Vector3(2, 3.5, 5)
+material = SubResource("StandardMaterial3D_lquwl")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="World/TunnerLong"]
+operation = 2
+size = Vector3(1.5, 3, 5)
+
+[node name="Portal5" parent="World/TunnerLong" node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+link = NodePath("../../TunnelShort/Portal3")
+portal_area_margin = Vector3(0.1, 0.1, 0.01)
+size = Vector3(1.5, 3, 0.01)
+
+[node name="Portal6" parent="World/TunnerLong" node_paths=PackedStringArray("link") instance=ExtResource("2_0xm2m")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.5)
+link = NodePath("../../TunnelShort/Portal4")
+portal_area_margin = Vector3(0.1, 0.1, 0.1)
+size = Vector3(1.5, 3, 0.1)
