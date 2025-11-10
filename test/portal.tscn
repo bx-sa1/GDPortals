@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=3 uid="uid://vwd7daj7kja1"]
+
+[ext_resource type="Script" uid="uid://db5pv7n064hm4" path="res://scripts/portal.gd" id="1_0r486"]
+[ext_resource type="Shader" uid="uid://bqysxebai4w6r" path="res://scripts/portal.gdshader" id="2_ef3v5"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_grrij"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_grrij"]
+resource_local_to_scene = true
+render_priority = 0
+shader = ExtResource("2_ef3v5")
+shader_parameter/albedo = SubResource("ViewportTexture_grrij")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ef3v5"]
+
+[node name="Portal2" type="Area3D"]
+script = ExtResource("1_0r486")
+metadata/_custom_type_script = "uid://db5pv7n064hm4"
+
+[node name="Portal" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.036891576)
+layers = 524288
+size = Vector3(0.1, 0.1, 0.07378315)
+material = SubResource("ShaderMaterial_grrij")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="Camera3D" type="Camera3D" parent="SubViewport"]
+current = true
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_ef3v5")
