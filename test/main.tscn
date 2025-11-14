@@ -1,7 +1,8 @@
-[gd_scene load_steps=15 format=3 uid="uid://e41o2yvg2mdq"]
+[gd_scene load_steps=16 format=3 uid="uid://e41o2yvg2mdq"]
 
 [ext_resource type="PackedScene" uid="uid://vwd7daj7kja1" path="res://portal.tscn" id="2_0xm2m"]
-[ext_resource type="Script" uid="uid://1tshesakosmw" path="res://addons/GDPlayerControllers/scripts/fps_controller.gd" id="2_h2yge"]
+[ext_resource type="Script" uid="uid://d3sl632156p6h" path="res://addons/GDPlayerControllers/scripts/3d/camera_controller.gd" id="2_1bvp3"]
+[ext_resource type="Script" uid="uid://bf0oclbse2gkf" path="res://addons/GDPlayerControllers/scripts/3d/fps_controller.gd" id="2_h2yge"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_0xm2m"]
 
@@ -51,17 +52,21 @@ directional_shadow_blend_splits = true
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 10, 2.951445, -13)
 velocity = Vector3(0, -0.45, 0)
 script = ExtResource("2_h2yge")
-MAX_SPEED = 5
 JUMP_ACCEL = 6
-
-[node name="Camera3D" type="Camera3D" parent="FPController"]
-near = 0.001
+metadata/_custom_type_script = "uid://bf0oclbse2gkf"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="FPController"]
 shape = SubResource("CapsuleShape3D_0xm2m")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="FPController"]
 mesh = SubResource("CapsuleMesh_h2yge")
+
+[node name="CameraController3D" type="SpringArm3D" parent="FPController"]
+script = ExtResource("2_1bvp3")
+metadata/_custom_type_script = "uid://d3sl632156p6h"
+
+[node name="Camera3D" type="Camera3D" parent="FPController/CameraController3D"]
+near = 0.001
 
 [node name="World" type="Node3D" parent="."]
 
